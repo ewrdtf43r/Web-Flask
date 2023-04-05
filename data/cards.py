@@ -1,9 +1,11 @@
 import datetime
 import sqlalchemy
 from .db_session import SqlAlchemyBase
+from sqlalchemy_serializer import SerializerMixin
 
 
-class Card(SqlAlchemyBase):
+
+class Card(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'cards'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, 

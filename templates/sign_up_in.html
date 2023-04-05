@@ -35,6 +35,11 @@
                             {{messages|join()}}
                         </div>
                     {% endif %}
+                    {% if 'Неправильный email' in messages %}
+                        <div class="error-message">
+                            {{messages|join()}}
+                        </div>
+                    {% endif %}
                     {% endwith %}
                 </div>
             </form>
