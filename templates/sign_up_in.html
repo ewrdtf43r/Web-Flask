@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{url_for('static', filename='scripts/sign_up_in.css')}}">
+    <div class="wrapper">
+        <div class="form-wrapper sign-up">
+            <form action="" method="post">
+                {{ form_reg.hidden_tag() }}
+                {{form_reg.form_type}}
+                <h2>Регестарция</h2>
+                <div class="input-group input-group-email">
+                    {{ form_reg.email(class="form-control") }}
+                    {{ form_reg.email.label }}
+                </div>
+                <div class="input-group">
+                    {{ form_reg.username(class="form-control") }}
+                    {{ form_reg.username.label }}
+                </div>
+                <div class="input-group">
+                    {{ form_reg.password(class="form-control") }}
+                    {{ form_reg.password.label }}
+                </div>
+                {{ form_reg.submit(class="btn", onclick="document.getElementById('form_type').value = 'reg';") }}
+                <div class="sign-link">
+                    <p>Есть аккаунт? <a href="#"
+                    class="signIn-link">Вход</a></p>
+                    {% with messages = get_flashed_messages() %}
+                    {% if 'Такой email уже зарегистрирован' in messages %}
+                        <div class="error-message">
+                            {{messages|join()}}
+                        </div>
+                    {% endif %}
+                    {% if 'Имя пользователя занято' in messages %}
+                        <div class="error-message">
+                            {{messages|join()}}
+                        </div>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            </form>
+        </div>
+        <div class="form-wrapper sign-in">
+            <form action="" method="post">
+                {{ form_log.hidden_tag() }}
+                {{form_log.form_type}}
+                <h2>Вход</h2>
+                <div class="input-group">
+                    {{ form_log.username(class="form-control") }}
+                    {{ form_log.username.label }}
+                </div>
+                <div class="input-group">
+                    {{ form_log.password(class="form-control") }}
+                    {{ form_log.password.label }}
+                </div>
+                <div class="forgot-pass">
+                    <a href="#">Забыли пароль?</a>
+                </div>
+                {{ form_log.submit(class="btn", onclick="document.getElementById('form_type').value = 'log';") }}
+                <div class="sign-link">
+                    <p>Нет аккаунта? <a href="#"
+                    class="signUp-link">Регестрация</a></p>
+                    {% with messages = get_flashed_messages() %}
+                    {% if 'Пользователь не найден' in messages %}
+                        <div class="error-message">
+                            {{messages|join()}}
+                        </div>
+                    {% endif %}
+                    {% if 'Неправильный пароль' in messages %}
+                        <div class="error-message">
+                            {{messages|join()}}
+                        </div>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{url_for('static', filename='scripts/sign_up_in.js')}}"></script>
+{% endblock %}
