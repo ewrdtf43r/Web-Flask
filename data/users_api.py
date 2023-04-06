@@ -1,6 +1,6 @@
 import flask
 from flask import jsonify, request
-from flask_login import login_user
+import requests
 
 from . import db_session
 from .users import User
@@ -27,16 +27,15 @@ def create_users():
     user.set_password(request.json['password'])
     db_sess.add(user)
     db_sess.commit()
-    login_user(user, remember=True)
     return jsonify({'success': 'OK'})
 
 
-@blueprint.route('/api/users', methods=['GET'])
-def get_users():
+@blueprint.route('/api/users/<string:name_user>', methods=['GET'])
+def get_users(name_user):
     if request.json:
         db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(User.name == request.json["name"], User.email == request.json["email"]).one_or_none()
-        print(user)
+        user = db_sess.query(User).filter(User.name == name_user).one_or_none()
+        print(user.name)
         if user != None:
             if user.check_password(request.json["password"]):
                 return jsonify({"name": user.name, "about": user.about, "email": user.email, "created_date": user.created_date})

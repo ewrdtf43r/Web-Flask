@@ -51,7 +51,6 @@ def sign_up_in():
             flash("Неправильный пароль", "error")
             return render_template('sign_up_in.html', title='Аутификация', form_reg=form_registr, form_log=form_login)
         print(f"login: {form_login.username.data, form_login.password.data}")
-        print(user.check_password(form_login.password.data))
         login_user(user, remember=True)
         db_sess.close()
         return redirect("/main")
@@ -62,17 +61,10 @@ def sign_up_in():
             if db_sess.query(User).filter(User.name == form_registr.username.data).first():
                 flash("Имя пользователя занято", "error")
                 return render_template('sign_up_in.html', title='Аутификация', form_reg=form_registr, form_log=form_login)
-            user = User()
-            user.name = form_registr.username.data
-            user.about = ""
-            user.email = form_registr.email.data
-            user.set_password(form_registr.password.data)
-            db_sess.add(user)
-            db_sess.commit()
-            login_user(user, remember=True)
-            db_sess.close()
+            requests.post(url="http://localhost:5000/api/users", json={"name": form_registr.username.data, "password": form_registr.password.data, "email": form_registr.email.data, "about": ""}).json()
+            login_user(db_sess.query(User).filter(User.name == form_login.username.data).first(), remember=True)
             return redirect("/main")
-        except sqlalchemy.exc.IntegrityError:
+        except requests.exceptions.JSONDecodeError:
             flash("Такой email уже зарегистрирован", "error")
             return render_template('sign_up_in.html', title='Аутификация', form_reg=form_registr, form_log=form_login)
         return redirect('/main')
@@ -91,7 +83,7 @@ def main_page():
 def main():
     db_session.global_init("db/users_and_cards.sqlite")
     app.register_blueprint(users_api.blueprint)
-    app.run(port=8080, host='127.0.0.1')
+    app.run(port=5000, host='127.0.0.1')
 
 if __name__ == '__main__':
     main()
