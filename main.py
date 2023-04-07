@@ -1,5 +1,5 @@
 import flask
-from flask_login import LoginManager, login_user, login_required, logout_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask import Flask, render_template, url_for, redirect, request, flash, make_response, jsonify
 import sqlalchemy
 from register_form import RegisterForm, LoginForm
@@ -63,6 +63,7 @@ def sign_up_in():
                 return render_template('sign_up_in.html', title='Аутификация', form_reg=form_registr, form_log=form_login)
             requests.post(url="http://localhost:5000/api/users", json={"name": form_registr.username.data, "password": form_registr.password.data, "email": form_registr.email.data, "about": ""}).json()
             login_user(db_sess.query(User).filter(User.name == form_login.username.data).first(), remember=True)
+            db_sess.close()
             return redirect("/main")
         except requests.exceptions.JSONDecodeError:
             flash("Такой email уже зарегистрирован", "error")
@@ -78,7 +79,10 @@ def sign_up_in():
 @app.route('/')
 @app.route('/main')
 def main_page():
-    return render_template("main.html")
+    if current_user.is_authenticated:
+        return render_template("main_updated.html")
+    else:
+        return redirect("/sign_up_in")
 
 def main():
     db_session.global_init("db/users_and_cards.sqlite")

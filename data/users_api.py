@@ -22,12 +22,23 @@ def create_users():
     user = User(
         name=request.json['name'],
         about=request.json['about'],
-        email=request.json['email']
+        email=request.json['email'],
+        icon='/static/icon/standart_icon_user.svg'
     )
     user.set_password(request.json['password'])
     db_sess.add(user)
     db_sess.commit()
     return jsonify({'success': 'OK'})
+
+
+@blueprint.route('/api/users/<int:id_user>', methods=['GET'])
+def get_user_by_id(id_user):
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.id == id_user).one_or_none()
+    if user != None:
+        return jsonify({"name": user.name, "icon": user.icon})
+    else:
+        return jsonify({'error': 'Error GET'})
 
 
 @blueprint.route('/api/users/<string:name_user>', methods=['GET'])
@@ -38,7 +49,7 @@ def get_users(name_user):
         print(user.name)
         if user != None:
             if user.check_password(request.json["password"]):
-                return jsonify({"name": user.name, "about": user.about, "email": user.email, "created_date": user.created_date})
+                return jsonify({"name": user.name, "about": user.about, "email": user.email, "created_date": user.created_date, "icon": user.icon})
     return jsonify({'error': 'Error GET'})
 
         
