@@ -102,6 +102,10 @@ video {
     z-index: 1;
 }
 
+.nav-link {
+    white-space: nowrap;
+}
+
 
 @media only screen and (max-width: 767px) {
     .navbar-nav {
@@ -122,5 +126,34 @@ video {
     }
     .carousel-item {
         height: 60vh;
+    }
+
+    .inline-user {
+        display: flex;
+        justify-content: center;
+    }
+
+    .icon_user {
+        display: none
+    }
+}
+
+.inline-user {
+    margin: 0;
+    text-align: right;
+}
+
+@media only screen and (max-width: 991px) {
+    .inline-user {
+    margin: 0;
+    text-align: left;
+    }
+    
+    .icon_user {
+        display: none;
+    }
+
+    .navbar .appbtn {
+        margin: 0
     }
 }

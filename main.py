@@ -3,10 +3,12 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from flask import Flask, render_template, url_for, redirect, request, flash, make_response, jsonify
 import sqlalchemy
 from register_form import RegisterForm, LoginForm
+from edit_form import EditForm
 from data import db_session, users_api
 from data.users import User
 from data.cards import Card
 import requests
+import os
 
 app = Flask(__name__)
 
@@ -74,13 +76,45 @@ def sign_up_in():
             flash("Неправильный email", "error")
             return render_template('sign_up_in.html', title='Аутификация', form_reg=form_registr, form_log=form_login)
     return render_template('sign_up_in.html', title='Аутификация', form_reg=form_registr, form_log=form_login)
-    
+
+@app.route('/change_settings', methods=['GET', 'POST'])
+@login_required
+def change_settings():
+    edit_form = EditForm()
+    if edit_form.validate_on_submit():
+        print(edit_form.email.data, edit_form.password.data, edit_form.new_password.data, edit_form.about.data, edit_form.photo.data)
+        respocde = requests.put(url="http://localhost:5000/api/users", json={"name": current_user.name, "email": edit_form.email.data, "password": edit_form.password.data, "new_password": edit_form.new_password.data, "about": edit_form.about.data})
+        print(respocde.json())
+        if respocde.json().get("success") == "OK":
+            current_user.email = edit_form.email.data
+            current_user.about = edit_form.about.data
+            if edit_form.photo.data.filename:
+                filename = edit_form.photo.data.filename
+                print(filename)
+                edit_form.photo.data.save(f"./static/icon/{filename}")
+                new_filename = f"{current_user.name}.jpg"
+                if os.path.exists(f"./static/icon_user/{new_filename}"):
+                    os.remove(f'./static/icon_user/{new_filename}')
+                os.rename(f"./static/icon/{filename}", f"./static/icon_user/{new_filename}")
+                db_sess = db_session.create_session()
+                user = db_sess.query(User).filter(User.name == current_user.name).one_or_none()
+                user.icon = url_for("static", filename=f"icon_user/{new_filename}")
+                current_user.icon = url_for("static", filename=f"icon_user/{new_filename}")
+                db_sess.commit()
+            flash("Изменения внесены", "success")
+        elif respocde.json().get("error") == "Invalid password":
+            flash("Неправильный пароль", "error")
+        elif respocde.json().get("error") == "User not found":
+            flash("Пользователь не найден", "error")
+
+        return render_template("change_settings.html", title="Настройки", form=edit_form)
+    return render_template("change_settings.html", title="Настройки", form=edit_form)
 
 @app.route('/')
 @app.route('/main')
 def main_page():
     if current_user.is_authenticated:
-        return render_template("main_updated.html")
+        return render_template("main.html", title="Основная страница")
     else:
         return redirect("/sign_up_in")
 

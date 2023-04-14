@@ -1,0 +1,138 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: no-repeat url("../img/background_sign_in_up.jpg");
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    overflow: hidden;
+}
+.profile-links {
+    background-color: #fff;
+    padding: 30px 20px;
+    text-align: center;
+    margin: 70px 100px 0 70px;
+    border-radius: 10px;
+}
+
+.profile-links img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-bottom: 25px;
+}
+
+.profile-links li {
+    display: block;
+    margin: 10px 0;
+    color: #333;
+}
+
+.profile-links li a {
+    color: #333;
+    text-decoration: none;
+    margin: 10px 0;
+    display: inline-block;
+}
+
+.mt-custum {
+    margin-top: 100px;
+}
+
+.mt-custum .details {
+    border-bottom: 1px solid #1977cc;
+    padding: 20px;
+    font-weight: 500;
+}
+
+.text-justify {
+    text-align: justify;
+}
+
+.upload {
+    width: 125px;
+    position: relative;
+    margin: auto;
+}
+
+.upload img {
+    border-radius: 50%;
+    border: 5px solid #eaeaea;
+}
+
+.upload .round {
+    position: absolute;
+    bottom: 10%;
+    right: 3%;
+    background: #00B4FF;
+    width: 32px;
+    height: 32px;
+    line-height: 33px;
+    text-align: center;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.upload .round input[type="file"] {
+    position: absolute;
+    transform: scale(2);
+    opacity: 0;
+}
+
+input[type=file]::-webkit-file-upload-button {
+    cursor: pointer;
+}
+
+@media (max-width:1200px) {
+    .mt-custum {
+        margin-top: 50px;
+    }
+
+    .profile-links {
+        background-color: #fff;
+        padding: 30px 20px;
+        text-align: center;
+        margin: 50px 50px 0 50px;
+        border-radius: 10px;
+    }
+
+}
+
+@media (max-width:991px) {
+    .mt-custum {
+        margin-top: 20px;
+    }
+
+    .profile-links {
+        background-color: #fff;
+        padding: 30px 20px;
+        text-align: center;
+        margin: 20px 0 0 0;
+        border-radius: 10px;
+    }
+
+}
+
+@media (max-width:600px) {
+
+    .profile-links li {
+        margin: 0;
+    }
+
+    .profile-links img {
+        margin: 10px;
+    }
+
+    .mt-custum .details {
+        padding: 10px;
+    }
+
+    .upload .round {
+        bottom: 0%;
+        right: 3%;
+    }
+}
