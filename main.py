@@ -4,11 +4,13 @@ from flask import Flask, render_template, url_for, redirect, request, flash, mak
 import sqlalchemy
 from register_form import RegisterForm, LoginForm
 from edit_form import EditForm
-from data import db_session, users_api
+from data import db_session, users_api, travels_api
 from data.users import User
 from data.cards import Card
 import requests
 import os
+
+from waitress import serve
 
 app = Flask(__name__)
 
@@ -110,6 +112,16 @@ def change_settings():
         return render_template("change_settings.html", title="Настройки", form=edit_form)
     return render_template("change_settings.html", title="Настройки", form=edit_form)
 
+@app.route('/catalog/<int:travel_id>')
+@login_required
+def catalog_page(travel_id):
+    content = requests.get(url=f"http://localhost:5000/api/travels/{travel_id}")
+    if content.json().get("error"):
+        return redirect("/main")
+    print(content.json())
+    return render_template("travel_card.html", title="Путешествие", travel_info=content.json())
+
+    
 @app.route('/')
 @app.route('/main')
 def main_page():
@@ -121,7 +133,8 @@ def main_page():
 def main():
     db_session.global_init("db/users_and_cards.sqlite")
     app.register_blueprint(users_api.blueprint)
-    app.run(port=5000, host='127.0.0.1')
+    app.register_blueprint(travels_api.blueprint)
+    serve(app, host='127.0.0.1', port=5000)
 
 if __name__ == '__main__':
     main()

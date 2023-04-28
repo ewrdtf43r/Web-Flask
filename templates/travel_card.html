@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='scripts/travel_card.css') }}">
+
+    <div class="container">
+        <section class="one" style="background-image: url('{{ travel_info['img_briefly'] }}');background-size: cover;background-position: center;">
+            <h1>{{travel_info["title"]}}</h1>
+        </section>
+        <section class="two">
+            <h1>Second page</h1>
+        </section>
+        <section class="three">
+            <h1>Third page</h1>
+        </section>
+        <section class="four">
+            <h1>Web Dev</h1>
+        </section>
+    </div>
+{% endblock %}
